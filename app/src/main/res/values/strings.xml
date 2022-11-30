@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Lifehack Studio Test Kotlin</string>
+    <string name="company_logo">Company logo</string>
+    <string name="phone">"Телефон: "</string>
+    <string name="www">"WWW: "</string>
+    <string name="coordinates">"Координаты: "</string>
+</resources>
