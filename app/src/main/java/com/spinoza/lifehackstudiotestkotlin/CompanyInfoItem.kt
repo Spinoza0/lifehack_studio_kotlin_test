@@ -2,16 +2,14 @@ package com.spinoza.lifehackstudiotestkotlin
 
 import com.google.gson.annotations.SerializedName
 
-class CompanyInfoItem {
+class CompanyInfoItem(
     @SerializedName("id")
-    val id: Int = 0
-
+    private var id: Int,
     @SerializedName("name")
-    val name: String? = null
-
+    private var name: String?,
     @SerializedName("img")
-    val img: String? = null
-        get() = "${ApiFactory.BASE_URL}$field"
+    private var img: String?
+) {
 
     @SerializedName("description")
     val description: String? = null
@@ -34,4 +32,9 @@ class CompanyInfoItem {
             if (lat > 0.000001 && lon > 0.000001) result = "$lat / $lon"
             return result
         }
+
+    fun getUrl(): String = "${ApiFactory.BASE_URL}$img"
+
+    fun getName(): String? = name
+
 }

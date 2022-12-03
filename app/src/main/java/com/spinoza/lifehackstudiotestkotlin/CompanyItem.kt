@@ -2,14 +2,19 @@ package com.spinoza.lifehackstudiotestkotlin
 
 import com.google.gson.annotations.SerializedName
 
-class CompanyItem {
+class CompanyItem(
     @SerializedName("id")
-    val id: Int = 0
-
+    private var id: Int,
     @SerializedName("name")
-    val name: String? = null
-
+    private var name: String?,
     @SerializedName("img")
-    val img: String? = null
-        get() = "${ApiFactory.BASE_URL}$field"
+    private var img: String?
+) {
+
+    fun getId(): Int = id
+    fun getName(): String? = name
+    fun getUrl(): String = "${ApiFactory.BASE_URL}$img"
+    fun getImg(): String? = img
+
+
 }

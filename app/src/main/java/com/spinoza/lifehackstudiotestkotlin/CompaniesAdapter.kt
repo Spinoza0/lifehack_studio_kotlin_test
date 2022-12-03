@@ -40,10 +40,10 @@ class CompaniesAdapter : RecyclerView.Adapter<CompanyViewHolder>() {
     override fun onBindViewHolder(holder: CompanyViewHolder, position: Int) {
         val company = companies[position]
         Glide.with(holder.itemView)
-            .load(company.img)
+            .load(company.getUrl())
             .error(R.drawable.no_logo)
             .into(holder.imageViewLogo)
-        holder.textViewCompanyName.text = company.name
+        holder.textViewCompanyName.text = company.getName()
         holder.itemView.setOnClickListener { onCompanyClickListener?.onCompanyClick(company) }
     }
 

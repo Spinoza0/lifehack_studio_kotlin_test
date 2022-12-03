@@ -38,10 +38,7 @@ class CompaniesActivity : AppCompatActivity() {
             CompaniesAdapter.OnCompanyClickListener {
             override fun onCompanyClick(company: CompanyItem) {
                 startActivity(
-                    CompanyInfoActivity.newIntent(
-                        this@CompaniesActivity,
-                        company.id
-                    )
+                    CompanyInfoActivity.newIntent(this@CompaniesActivity, company)
                 )
             }
         })

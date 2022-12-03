@@ -20,13 +20,22 @@ class CompanyInfoViewModel(application: Application) : AndroidViewModel(applicat
         compositeDisposable.dispose()
     }
 
-    fun loadCompany(companyId: Int) {
-        val disposable = ApiFactory.apiService.loadCompanyInfo(companyId)
+    fun loadCompany(companyItem: CompanyItem) {
+        val disposable = ApiFactory.apiService.loadCompanyInfo(companyItem.getId())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { companies -> company.setValue(companies[0]) },
-                { throwable -> Log.d("loadCompany", throwable.toString()) })
+                { throwable ->
+                    Log.d("loadCompany", throwable.toString())
+                    company.setValue(
+                        CompanyInfoItem(
+                            companyItem.getId(),
+                            companyItem.getName(),
+                            companyItem.getImg()
+                        )
+                    )
+                })
 
         compositeDisposable.add(disposable)
     }

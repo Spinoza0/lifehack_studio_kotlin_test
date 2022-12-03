@@ -27,26 +27,31 @@ class CompanyInfoActivity : AppCompatActivity() {
 
         companyInfoViewModel = ViewModelProvider(this)[CompanyInfoViewModel::class.java]
 
-        val companyId = intent.getIntExtra(EXTRA_COMPANY_ID, 0)
-        if (companyId > 0) {
-            setContent(companyId)
+        val companyItem = CompanyItem(
+            intent.getIntExtra(EXTRA_COMPANY_ID, 0),
+            intent.getStringExtra(EXTRA_COMPANY_NAME),
+            intent.getStringExtra(EXTRA_COMPANY_IMG)
+        )
+
+        if (companyItem.getId() > 0) {
+            setContent(companyItem)
         } else {
             finish()
         }
     }
 
-    private fun setContent(companyId: Int) {
-        companyInfoViewModel.loadCompany(companyId)
+    private fun setContent(companyItem: CompanyItem) {
+        companyInfoViewModel.loadCompany(companyItem)
 
         companyInfoViewModel.getCompany().observe(
             this
         ) { company ->
             Glide.with(imageViewLogo)
-                .load(company.img)
+                .load(company.getUrl())
                 .error(R.drawable.no_logo)
                 .into(imageViewLogo)
 
-            setTextInfo(textViewCompanyName, text = company.name)
+            setTextInfo(textViewCompanyName, text = company.getName())
             setTextInfo(textViewCompanyDescription, text = company.description)
             setTextInfo(
                 textViewCompanyPhone,
@@ -86,10 +91,14 @@ class CompanyInfoActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_COMPANY_ID = "id"
+        const val EXTRA_COMPANY_NAME = "name"
+        const val EXTRA_COMPANY_IMG = "img"
 
-        fun newIntent(context: Context, companyId: Int): Intent {
+        fun newIntent(context: Context, company: CompanyItem): Intent {
             val intent = Intent(context, CompanyInfoActivity::class.java)
-            intent.putExtra(EXTRA_COMPANY_ID, companyId)
+            intent.putExtra(EXTRA_COMPANY_ID, company.getId())
+            intent.putExtra(EXTRA_COMPANY_NAME, company.getName())
+            intent.putExtra(EXTRA_COMPANY_IMG, company.getImg())
             return intent
         }
     }
