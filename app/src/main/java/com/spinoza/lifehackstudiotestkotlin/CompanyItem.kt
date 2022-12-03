@@ -16,5 +16,4 @@ class CompanyItem(
     fun getUrl(): String = "${ApiFactory.BASE_URL}$img"
     fun getImg(): String? = img
 
-
 }

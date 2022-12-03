@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.spinoza.lifehackstudiotestkotlin.CompaniesAdapter.CompanyViewHolder
@@ -48,8 +49,10 @@ class CompaniesAdapter : RecyclerView.Adapter<CompanyViewHolder>() {
     }
 
     fun setCompanies(companies: List<CompanyItem>) {
+        val diffUtilCallback = CompanyItemDiffUtilCallback(this.companies, companies)
+        val productDiffResult = DiffUtil.calculateDiff(diffUtilCallback)
         this.companies = companies
-        notifyDataSetChanged()
+        productDiffResult.dispatchUpdatesTo(this)
     }
 
     fun setOnCompanyClickListener(onCompanyClickListener: OnCompanyClickListener) {
