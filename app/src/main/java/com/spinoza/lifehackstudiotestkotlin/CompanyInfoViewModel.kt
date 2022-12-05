@@ -28,12 +28,8 @@ class CompanyInfoViewModel(application: Application) : AndroidViewModel(applicat
                 { companies -> company.setValue(companies[0]) },
                 { throwable ->
                     Log.d("loadCompany", throwable.toString())
-                    company.setValue(
-                        CompanyInfoItem(
-                            companyItem.getId(),
-                            companyItem.getName(),
-                            companyItem.getImg()
-                        )
+                    company.value = CompanyInfoItem(
+                        companyItem.getId(), companyItem.getName(), companyItem.getImg()
                     )
                 })
 

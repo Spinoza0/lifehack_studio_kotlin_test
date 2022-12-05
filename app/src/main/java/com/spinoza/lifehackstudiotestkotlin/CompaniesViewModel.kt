@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class CompaniesViewModel(application: Application) : AndroidViewModel(application) {
@@ -31,19 +30,22 @@ class CompaniesViewModel(application: Application) : AndroidViewModel(applicatio
         if (isLoading.value == false) {
             val disposable = ApiFactory.apiService.loadCompanies()
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe { isLoading.setValue(true) }
+                .doOnSubscribe { isLoading.value = true }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate { isLoading.setValue(false) }
-                .subscribe({ companiesResponse ->
-                    val loadedCompanies: MutableList<CompanyItem>
-                    if (companies.value != null) {
-                        loadedCompanies = companies.value!!
-                        loadedCompanies.addAll(companiesResponse)
-                    } else {
-                        loadedCompanies = companiesResponse.toMutableList()
-                    }
-                    companies.setValue(loadedCompanies)
-                }, Consumer { throwable -> Log.d("loadCompanies", throwable.toString()) })
+                .doAfterTerminate { isLoading.value = false }
+                .subscribe(
+                    { companiesResponse ->
+                        val loadedCompanies: MutableList<CompanyItem>
+                        if (companies.value != null) {
+                            loadedCompanies = companies.value!!
+                            loadedCompanies.addAll(companiesResponse)
+                        } else {
+                            loadedCompanies = companiesResponse.toMutableList()
+                        }
+                        companies.value = loadedCompanies
+                    },
+                    { throwable -> Log.d("loadCompanies", throwable.toString()) }
+                )
 
             compositeDisposable.add(disposable)
         }
