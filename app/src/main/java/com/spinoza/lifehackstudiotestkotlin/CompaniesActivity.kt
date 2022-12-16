@@ -49,10 +49,7 @@ class CompaniesActivity : AppCompatActivity() {
             .observe(this) { companies -> companiesAdapter.setCompanies(companies) }
 
         companiesViewModel.isLoading().observe(this) { isLoading ->
-            if (isLoading)
-                progressBar.visibility = View.VISIBLE
-            else
-                progressBar.visibility = View.GONE
+            progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 }

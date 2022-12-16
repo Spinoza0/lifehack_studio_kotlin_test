@@ -27,11 +27,7 @@ class CompanyInfoItem(
     val phone: String? = null
 
     val coordinates: String
-        get() {
-            var result = ""
-            if (lat > 0.000001 && lon > 0.000001) result = "$lat / $lon"
-            return result
-        }
+        get() = if (lat > 0.000001 && lon > 0.000001) "$lat / $lon" else ""
 
     fun getUrl(): String = "${ApiFactory.BASE_URL}$img"
 

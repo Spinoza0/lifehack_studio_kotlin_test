@@ -35,13 +35,8 @@ class CompaniesViewModel(application: Application) : AndroidViewModel(applicatio
                 .doAfterTerminate { isLoading.value = false }
                 .subscribe(
                     { companiesResponse ->
-                        val loadedCompanies: MutableList<CompanyItem>
-                        if (companies.value != null) {
-                            loadedCompanies = companies.value!!
-                            loadedCompanies.addAll(companiesResponse)
-                        } else {
-                            loadedCompanies = companiesResponse.toMutableList()
-                        }
+                        val loadedCompanies = companies.value ?: companiesResponse.toMutableList()
+                        companies.value?.let { loadedCompanies.addAll(companiesResponse) }
                         companies.value = loadedCompanies
                     },
                     { throwable -> Log.d("loadCompanies", throwable.toString()) }
