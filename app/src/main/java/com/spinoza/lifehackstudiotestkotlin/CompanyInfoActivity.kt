@@ -4,26 +4,21 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.spinoza.lifehackstudiotestkotlin.databinding.ActivityCompanyInfoBinding
 
 class CompanyInfoActivity : AppCompatActivity() {
 
-    private lateinit var imageViewLogo: ImageView
-    private lateinit var textViewCompanyName: TextView
-    private lateinit var textViewCompanyDescription: TextView
-    private lateinit var textViewCompanyPhone: TextView
-    private lateinit var textViewCompanyWww: TextView
-    private lateinit var textViewCompanyCoordinates: TextView
+    private lateinit var binding: ActivityCompanyInfoBinding
     private lateinit var companyInfoViewModel: CompanyInfoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_company_info)
-        initViews()
+        binding = ActivityCompanyInfoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         companyInfoViewModel = ViewModelProvider(this)[CompanyInfoViewModel::class.java]
 
@@ -46,25 +41,25 @@ class CompanyInfoActivity : AppCompatActivity() {
         companyInfoViewModel.getCompany().observe(
             this
         ) { company ->
-            Glide.with(imageViewLogo)
+            Glide.with(binding.imageViewLogo)
                 .load(company.getUrl())
                 .error(R.drawable.no_logo)
-                .into(imageViewLogo)
+                .into(binding.imageViewLogo)
 
-            setTextInfo(textViewCompanyName, text = company.getName())
-            setTextInfo(textViewCompanyDescription, text = company.description)
+            setTextInfo(binding.textViewCompanyName, text = company.getName())
+            setTextInfo(binding.textViewCompanyDescription, text = company.description)
             setTextInfo(
-                textViewCompanyPhone,
+                binding.textViewCompanyPhone,
                 getString(R.string.phone),
                 company.phone
             )
             setTextInfo(
-                textViewCompanyWww,
+                binding.textViewCompanyWww,
                 getString(R.string.www),
                 company.www
             )
             setTextInfo(
-                textViewCompanyCoordinates,
+                binding.textViewCompanyCoordinates,
                 getString(R.string.coordinates),
                 company.coordinates
             )
@@ -78,15 +73,6 @@ class CompanyInfoActivity : AppCompatActivity() {
         } else {
             textView.visibility = View.GONE
         }
-    }
-
-    private fun initViews() {
-        imageViewLogo = findViewById(R.id.imageViewLogo)
-        textViewCompanyName = findViewById(R.id.textViewCompanyName)
-        textViewCompanyDescription = findViewById(R.id.textViewCompanyDescription)
-        textViewCompanyPhone = findViewById(R.id.textViewCompanyPhone)
-        textViewCompanyWww = findViewById(R.id.textViewCompanyWww)
-        textViewCompanyCoordinates = findViewById(R.id.textViewCompanyCoordinates)
     }
 
     companion object {
