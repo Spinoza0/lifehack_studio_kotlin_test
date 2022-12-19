@@ -12,7 +12,7 @@ import com.spinoza.lifehackstudiotestkotlin.CompaniesAdapter.CompanyViewHolder
 
 class CompaniesAdapter : RecyclerView.Adapter<CompanyViewHolder>() {
     private var companies: List<CompanyItem> = ArrayList()
-    private var onCompanyClickListener: OnCompanyClickListener? = null
+    var onCompanyClickListener: OnCompanyClickListener? = null
 
     interface OnCompanyClickListener {
         fun onCompanyClick(company: CompanyItem)
@@ -39,23 +39,24 @@ class CompaniesAdapter : RecyclerView.Adapter<CompanyViewHolder>() {
 
 
     override fun onBindViewHolder(holder: CompanyViewHolder, position: Int) {
-        val company = companies[position]
-        Glide.with(holder.itemView)
-            .load(company.getUrl())
-            .error(R.drawable.no_logo)
-            .into(holder.imageViewLogo)
-        holder.textViewCompanyName.text = company.getName()
-        holder.itemView.setOnClickListener { onCompanyClickListener?.onCompanyClick(company) }
+        with(holder) {
+            with(companies[position]) {
+                Glide.with(itemView)
+                    .load(getUrl())
+                    .error(R.drawable.no_logo)
+                    .into(holder.imageViewLogo)
+                holder.textViewCompanyName.text = getName()
+                holder.itemView.setOnClickListener {
+                    onCompanyClickListener?.onCompanyClick(this)
+                }
+            }
+        }
     }
 
     fun setCompanies(companies: List<CompanyItem>) {
         val diffUtilCallback = CompanyItemDiffUtilCallback(this.companies, companies)
-        val productDiffResult = DiffUtil.calculateDiff(diffUtilCallback)
+        val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
         this.companies = companies
-        productDiffResult.dispatchUpdatesTo(this)
-    }
-
-    fun setOnCompanyClickListener(onCompanyClickListener: OnCompanyClickListener) {
-        this.onCompanyClickListener = onCompanyClickListener
+        diffResult.dispatchUpdatesTo(this)
     }
 }

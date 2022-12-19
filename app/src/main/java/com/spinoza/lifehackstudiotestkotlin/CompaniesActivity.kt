@@ -32,14 +32,11 @@ class CompaniesActivity : AppCompatActivity() {
             false
         )
 
-        companiesAdapter.setOnCompanyClickListener(
-            object : CompaniesAdapter.OnCompanyClickListener {
-                override fun onCompanyClick(company: CompanyItem) {
-                    startActivity(
-                        CompanyInfoActivity.newIntent(this@CompaniesActivity, company)
-                    )
-                }
-            })
+        companiesAdapter.onCompanyClickListener = object : CompaniesAdapter.OnCompanyClickListener {
+            override fun onCompanyClick(company: CompanyItem) {
+                startActivity(CompanyInfoActivity.newIntent(this@CompaniesActivity, company))
+            }
+        }
 
         companiesViewModel.getCompanies()
             .observe(this) { companies -> companiesAdapter.setCompanies(companies) }
