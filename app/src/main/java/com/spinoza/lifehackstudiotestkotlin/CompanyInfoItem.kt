@@ -6,9 +6,9 @@ class CompanyInfoItem(
     @SerializedName("id")
     private var id: Int,
     @SerializedName("name")
-    private var name: String?,
+    val name: String?,
     @SerializedName("img")
-    private var img: String?
+    private var img: String?,
 ) {
 
     @SerializedName("description")
@@ -29,8 +29,5 @@ class CompanyInfoItem(
     val coordinates: String
         get() = if (lat > 0.000001 && lon > 0.000001) "$lat / $lon" else ""
 
-    fun getUrl(): String = "${ApiFactory.BASE_URL}$img"
-
-    fun getName(): String? = name
-
+    fun getFullImgUrl() = "${ApiFactory.BASE_URL}$img"
 }

@@ -28,7 +28,7 @@ class CompanyInfoActivity : AppCompatActivity() {
             intent.getStringExtra(EXTRA_COMPANY_IMG)
         )
 
-        if (companyItem.getId() > 0) {
+        if (companyItem.id > 0) {
             setContent(companyItem)
         } else {
             finish()
@@ -41,28 +41,20 @@ class CompanyInfoActivity : AppCompatActivity() {
         companyInfoViewModel.getCompany().observe(
             this
         ) { company ->
-            Glide.with(binding.imageViewLogo)
-                .load(company.getUrl())
-                .error(R.drawable.no_logo)
-                .into(binding.imageViewLogo)
+            with(binding) {
+                Glide.with(imageViewLogo)
+                    .load(company.getFullImgUrl())
+                    .error(R.drawable.no_logo)
+                    .into(imageViewLogo)
 
-            setTextInfo(binding.textViewCompanyName, text = company.getName())
-            setTextInfo(binding.textViewCompanyDescription, text = company.description)
-            setTextInfo(
-                binding.textViewCompanyPhone,
-                getString(R.string.phone),
-                company.phone
-            )
-            setTextInfo(
-                binding.textViewCompanyWww,
-                getString(R.string.www),
-                company.www
-            )
-            setTextInfo(
-                binding.textViewCompanyCoordinates,
-                getString(R.string.coordinates),
-                company.coordinates
-            )
+                setTextInfo(textViewCompanyName, text = company.name)
+                setTextInfo(textViewCompanyDescription, text = company.description)
+                setTextInfo(textViewCompanyPhone, getString(R.string.phone), company.phone)
+                setTextInfo(textViewCompanyWww, getString(R.string.www), company.www)
+                setTextInfo(textViewCompanyCoordinates,
+                    getString(R.string.coordinates),
+                    company.coordinates)
+            }
         }
     }
 
@@ -82,9 +74,11 @@ class CompanyInfoActivity : AppCompatActivity() {
 
         fun newIntent(context: Context, company: CompanyItem): Intent {
             val intent = Intent(context, CompanyInfoActivity::class.java)
-            intent.putExtra(EXTRA_COMPANY_ID, company.getId())
-            intent.putExtra(EXTRA_COMPANY_NAME, company.getName())
-            intent.putExtra(EXTRA_COMPANY_IMG, company.getImg())
+            with(intent) {
+                putExtra(EXTRA_COMPANY_ID, company.id)
+                putExtra(EXTRA_COMPANY_NAME, company.name)
+                putExtra(EXTRA_COMPANY_IMG, company.img)
+            }
             return intent
         }
     }

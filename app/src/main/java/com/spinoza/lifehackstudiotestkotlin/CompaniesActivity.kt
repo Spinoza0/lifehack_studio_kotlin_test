@@ -25,12 +25,19 @@ class CompaniesActivity : AppCompatActivity() {
 
     private fun setContent() {
         companiesAdapter = CompaniesAdapter()
-        binding.recyclerViewCompanies.adapter = companiesAdapter
-        binding.recyclerViewCompanies.layoutManager = LinearLayoutManager(
-            this,
-            LinearLayoutManager.VERTICAL,
-            false
-        )
+
+        with(binding) {
+            recyclerViewCompanies.adapter = companiesAdapter
+            recyclerViewCompanies.layoutManager = LinearLayoutManager(
+                this@CompaniesActivity,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            companiesViewModel.isLoading()
+                .observe(this@CompaniesActivity) { isLoading ->
+                    progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                }
+        }
 
         companiesAdapter.onCompanyClickListener = object : CompaniesAdapter.OnCompanyClickListener {
             override fun onCompanyClick(company: CompanyItem) {
@@ -40,9 +47,5 @@ class CompaniesActivity : AppCompatActivity() {
 
         companiesViewModel.getCompanies()
             .observe(this) { companies -> companiesAdapter.setCompanies(companies) }
-
-        companiesViewModel.isLoading().observe(this) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
     }
 }

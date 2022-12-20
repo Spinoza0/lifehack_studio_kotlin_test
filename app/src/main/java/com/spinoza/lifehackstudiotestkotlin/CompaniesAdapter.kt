@@ -42,10 +42,10 @@ class CompaniesAdapter : RecyclerView.Adapter<CompanyViewHolder>() {
         with(holder) {
             with(companies[position]) {
                 Glide.with(itemView)
-                    .load(getUrl())
+                    .load(getFullImgUrl())
                     .error(R.drawable.no_logo)
                     .into(holder.imageViewLogo)
-                holder.textViewCompanyName.text = getName()
+                holder.textViewCompanyName.text = name
                 holder.itemView.setOnClickListener {
                     onCompanyClickListener?.onCompanyClick(this)
                 }

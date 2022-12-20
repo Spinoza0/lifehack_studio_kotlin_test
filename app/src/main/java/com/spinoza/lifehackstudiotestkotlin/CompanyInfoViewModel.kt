@@ -21,7 +21,7 @@ class CompanyInfoViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun loadCompany(companyItem: CompanyItem) {
-        val disposable = ApiFactory.apiService.loadCompanyInfo(companyItem.getId())
+        val disposable = ApiFactory.apiService.loadCompanyInfo(companyItem.id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -29,10 +29,9 @@ class CompanyInfoViewModel(application: Application) : AndroidViewModel(applicat
                 { throwable ->
                     Log.d("loadCompany", throwable.toString())
                     company.value = CompanyInfoItem(
-                        companyItem.getId(), companyItem.getName(), companyItem.getImg()
+                        companyItem.id, companyItem.name, companyItem.img
                     )
                 })
-
         compositeDisposable.add(disposable)
     }
 }
