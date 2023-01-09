@@ -1,11 +1,16 @@
-package com.spinoza.lifehackstudiotestkotlin
+package com.spinoza.lifehackstudiotestkotlin.presentation
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.spinoza.lifehackstudiotestkotlin.data.ApiFactory
 import com.spinoza.lifehackstudiotestkotlin.databinding.ActivityCompaniesBinding
+import com.spinoza.lifehackstudiotestkotlin.presentation.adapter.CompaniesAdapter
+import com.spinoza.lifehackstudiotestkotlin.presentation.viewmodel.CompaniesViewModel
+import com.spinoza.lifehackstudiotestkotlin.presentation.viewmodel.ViewModelFactory
 
 
 class CompaniesActivity : AppCompatActivity() {
@@ -17,7 +22,10 @@ class CompaniesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCompaniesBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        companiesViewModel = ViewModelProvider(this)[CompaniesViewModel::class.java]
+        companiesViewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(ApiFactory.apiService)
+        )[CompaniesViewModel::class.java]
 
         setContent()
     }
@@ -39,13 +47,15 @@ class CompaniesActivity : AppCompatActivity() {
                 }
         }
 
-        companiesAdapter.onCompanyClickListener = object : CompaniesAdapter.OnCompanyClickListener {
-            override fun onCompanyClick(company: CompanyItem) {
-                startActivity(CompanyInfoActivity.newIntent(this@CompaniesActivity, company))
-            }
+        companiesAdapter.onCompanyClickListener = {
+            startActivity(CompanyInfoActivity.newIntent(this@CompaniesActivity, it))
         }
 
         companiesViewModel.getCompanies()
             .observe(this) { companies -> companiesAdapter.setCompanies(companies) }
+
+        companiesViewModel.isError().observe(this) {
+            Toast.makeText(this@CompaniesActivity, it, Toast.LENGTH_LONG).show()
+        }
     }
 }

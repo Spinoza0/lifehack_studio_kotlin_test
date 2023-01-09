@@ -1,4 +1,4 @@
-package com.spinoza.lifehackstudiotestkotlin
+package com.spinoza.lifehackstudiotestkotlin.presentation
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.spinoza.lifehackstudiotestkotlin.R
+import com.spinoza.lifehackstudiotestkotlin.data.ApiFactory
 import com.spinoza.lifehackstudiotestkotlin.databinding.ActivityCompanyInfoBinding
+import com.spinoza.lifehackstudiotestkotlin.domain.CompanyItem
+import com.spinoza.lifehackstudiotestkotlin.presentation.viewmodel.CompanyInfoViewModel
+import com.spinoza.lifehackstudiotestkotlin.presentation.viewmodel.ViewModelFactory
 
 class CompanyInfoActivity : AppCompatActivity() {
 
@@ -20,7 +25,10 @@ class CompanyInfoActivity : AppCompatActivity() {
         binding = ActivityCompanyInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        companyInfoViewModel = ViewModelProvider(this)[CompanyInfoViewModel::class.java]
+        companyInfoViewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(ApiFactory.apiService)
+        )[CompanyInfoViewModel::class.java]
 
         val companyItem = CompanyItem(
             intent.getIntExtra(EXTRA_COMPANY_ID, 0),

@@ -1,21 +1,23 @@
-package com.spinoza.lifehackstudiotestkotlin
+package com.spinoza.lifehackstudiotestkotlin.presentation.viewmodel
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.spinoza.lifehackstudiotestkotlin.domain.ApiService
+import com.spinoza.lifehackstudiotestkotlin.domain.CompanyItem
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class CompaniesViewModel(application: Application) : AndroidViewModel(application) {
+class CompaniesViewModel(private val apiService: ApiService) : ViewModel() {
     private val companies = MutableLiveData<MutableList<CompanyItem>>()
     private val isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val error = MutableLiveData<String>()
     private val compositeDisposable = CompositeDisposable()
 
     fun getCompanies(): LiveData<MutableList<CompanyItem>> = companies
     fun isLoading(): LiveData<Boolean> = isLoading
+    fun isError(): LiveData<String> = error
 
     init {
         loadCompanies()
@@ -28,7 +30,7 @@ class CompaniesViewModel(application: Application) : AndroidViewModel(applicatio
 
     private fun loadCompanies() {
         if (isLoading.value == false) {
-            val disposable = ApiFactory.apiService.loadCompanies()
+            val disposable = apiService.loadCompanies()
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe { isLoading.value = true }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -39,7 +41,7 @@ class CompaniesViewModel(application: Application) : AndroidViewModel(applicatio
                         companies.value?.let { loadedCompanies.addAll(companiesResponse) }
                         companies.value = loadedCompanies
                     },
-                    { throwable -> Log.d("loadCompanies", throwable.toString()) }
+                    { throwable -> error.value = throwable.toString() }
                 )
 
             compositeDisposable.add(disposable)

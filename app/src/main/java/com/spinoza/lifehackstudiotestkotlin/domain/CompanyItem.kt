@@ -1,6 +1,7 @@
-package com.spinoza.lifehackstudiotestkotlin
+package com.spinoza.lifehackstudiotestkotlin.domain
 
 import com.google.gson.annotations.SerializedName
+import com.spinoza.lifehackstudiotestkotlin.data.ApiFactory
 
 class CompanyItem(
     @SerializedName("id")

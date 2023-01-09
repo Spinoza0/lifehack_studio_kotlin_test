@@ -1,4 +1,4 @@
-package com.spinoza.lifehackstudiotestkotlin
+package com.spinoza.lifehackstudiotestkotlin.domain
 
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET

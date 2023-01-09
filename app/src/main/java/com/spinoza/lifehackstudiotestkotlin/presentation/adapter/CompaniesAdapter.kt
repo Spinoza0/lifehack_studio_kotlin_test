@@ -1,4 +1,4 @@
-package com.spinoza.lifehackstudiotestkotlin
+package com.spinoza.lifehackstudiotestkotlin.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,15 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.spinoza.lifehackstudiotestkotlin.CompaniesAdapter.CompanyViewHolder
+import com.spinoza.lifehackstudiotestkotlin.R
+import com.spinoza.lifehackstudiotestkotlin.domain.CompanyItem
+import com.spinoza.lifehackstudiotestkotlin.presentation.adapter.CompaniesAdapter.CompanyViewHolder
 
 class CompaniesAdapter : RecyclerView.Adapter<CompanyViewHolder>() {
     private var companies: List<CompanyItem> = ArrayList()
-    var onCompanyClickListener: OnCompanyClickListener? = null
-
-    interface OnCompanyClickListener {
-        fun onCompanyClick(company: CompanyItem)
-    }
+    var onCompanyClickListener: ((CompanyItem) -> Unit)? = null
 
     override fun getItemCount() = companies.size
 
@@ -47,16 +45,40 @@ class CompaniesAdapter : RecyclerView.Adapter<CompanyViewHolder>() {
                     .into(holder.imageViewLogo)
                 holder.textViewCompanyName.text = name
                 holder.itemView.setOnClickListener {
-                    onCompanyClickListener?.onCompanyClick(this)
+                    onCompanyClickListener?.invoke(this)
                 }
             }
         }
     }
 
     fun setCompanies(companies: List<CompanyItem>) {
-        val diffUtilCallback = CompanyItemDiffUtilCallback(this.companies, companies)
+        val diffUtilCallback = DiffUtilCallback(this.companies, companies)
         val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
         this.companies = companies
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    private class DiffUtilCallback(
+        private var oldList: List<CompanyItem>,
+        private var newList: List<CompanyItem>,
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int {
+            return oldList.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newList.size
+        }
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].id == newList[newItemPosition].id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+            return oldItem.name == newItem.name && oldItem.img == newItem.img
+        }
     }
 }

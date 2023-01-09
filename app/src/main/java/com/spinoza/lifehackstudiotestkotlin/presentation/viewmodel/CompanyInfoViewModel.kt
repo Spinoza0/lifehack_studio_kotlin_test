@@ -1,15 +1,16 @@
-package com.spinoza.lifehackstudiotestkotlin
+package com.spinoza.lifehackstudiotestkotlin.presentation.viewmodel
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.spinoza.lifehackstudiotestkotlin.domain.ApiService
+import com.spinoza.lifehackstudiotestkotlin.domain.CompanyInfoItem
+import com.spinoza.lifehackstudiotestkotlin.domain.CompanyItem
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class CompanyInfoViewModel(application: Application) : AndroidViewModel(application) {
+class CompanyInfoViewModel(private val apiService: ApiService) : ViewModel() {
     private val company = MutableLiveData<CompanyInfoItem>()
     private val compositeDisposable = CompositeDisposable()
 
@@ -21,16 +22,14 @@ class CompanyInfoViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun loadCompany(companyItem: CompanyItem) {
-        val disposable = ApiFactory.apiService.loadCompanyInfo(companyItem.id)
+        val disposable = apiService.loadCompanyInfo(companyItem.id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { companies -> company.setValue(companies[0]) },
+                { companies -> company.value = companies[0] },
                 { throwable ->
-                    Log.d("loadCompany", throwable.toString())
-                    company.value = CompanyInfoItem(
-                        companyItem.id, companyItem.name, companyItem.img
-                    )
+                    company.value =
+                        CompanyInfoItem(companyItem.id, companyItem.name, companyItem.img)
                 })
         compositeDisposable.add(disposable)
     }
