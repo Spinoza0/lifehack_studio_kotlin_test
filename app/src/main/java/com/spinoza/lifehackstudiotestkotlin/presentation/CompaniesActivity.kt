@@ -33,29 +33,31 @@ class CompaniesActivity : AppCompatActivity() {
 
     private fun setContent() {
         companiesAdapter = CompaniesAdapter()
-
-        with(binding) {
-            recyclerViewCompanies.adapter = companiesAdapter
-            recyclerViewCompanies.layoutManager = LinearLayoutManager(
-                this@CompaniesActivity,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
-            companiesViewModel.isLoading()
-                .observe(this@CompaniesActivity) { isLoading ->
-                    progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-                }
-        }
+        binding.recyclerViewCompanies.adapter = companiesAdapter
+        binding.recyclerViewCompanies.layoutManager = LinearLayoutManager(
+            this@CompaniesActivity,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
 
         companiesAdapter.onCompanyClickListener = {
             startActivity(CompanyInfoActivity.newIntent(this@CompaniesActivity, it))
         }
 
-        companiesViewModel.getCompanies()
-            .observe(this) { companies -> companiesAdapter.setCompanies(companies) }
+        setObservers()
+    }
+
+    private fun setObservers() {
+        companiesViewModel.getCompanies().observe(this) { companies ->
+            companiesAdapter.submitList(companies)
+        }
 
         companiesViewModel.isError().observe(this) {
             Toast.makeText(this@CompaniesActivity, it, Toast.LENGTH_LONG).show()
+        }
+
+        companiesViewModel.isLoading().observe(this@CompaniesActivity) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 }
