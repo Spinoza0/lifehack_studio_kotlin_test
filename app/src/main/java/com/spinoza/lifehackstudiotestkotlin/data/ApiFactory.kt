@@ -1,6 +1,5 @@
 package com.spinoza.lifehackstudiotestkotlin.data
 
-import com.spinoza.lifehackstudiotestkotlin.domain.ApiService
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,5 +13,5 @@ object ApiFactory {
         .build()
 
     @JvmField
-    val apiService: ApiService = retrofit.create(ApiService::class.java)
+    val apiService: WebService = retrofit.create(WebService::class.java)
 }
