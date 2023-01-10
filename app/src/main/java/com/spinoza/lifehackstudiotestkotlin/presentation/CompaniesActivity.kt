@@ -48,15 +48,15 @@ class CompaniesActivity : AppCompatActivity() {
     }
 
     private fun setObservers() {
-        companiesViewModel.getCompanies().observe(this) { companies ->
+        companiesViewModel.companies.observe(this) { companies ->
             companiesAdapter.submitList(companies)
         }
 
-        companiesViewModel.isError().observe(this) {
+        companiesViewModel.error.observe(this) {
             Toast.makeText(this@CompaniesActivity, it, Toast.LENGTH_LONG).show()
         }
 
-        companiesViewModel.isLoading().observe(this@CompaniesActivity) { isLoading ->
+        companiesViewModel.isLoading.observe(this@CompaniesActivity) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }

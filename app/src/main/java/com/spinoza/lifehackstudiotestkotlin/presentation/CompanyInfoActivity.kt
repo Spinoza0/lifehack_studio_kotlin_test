@@ -46,7 +46,7 @@ class CompanyInfoActivity : AppCompatActivity() {
     private fun setContent(companyItem: CompanyItem) {
         companyInfoViewModel.loadCompany(companyItem)
 
-        companyInfoViewModel.getCompany().observe(
+        companyInfoViewModel.company.observe(
             this
         ) { company ->
             with(binding) {

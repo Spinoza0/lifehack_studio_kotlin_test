@@ -11,10 +11,11 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class CompanyInfoViewModel(private val apiService: ApiService) : ViewModel() {
-    private val company = MutableLiveData<CompanyInfoItem>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun getCompany(): LiveData<CompanyInfoItem> = company
+    private val _company = MutableLiveData<CompanyInfoItem>()
+    val company: LiveData<CompanyInfoItem>
+        get() = _company
 
     override fun onCleared() {
         super.onCleared()
@@ -26,9 +27,9 @@ class CompanyInfoViewModel(private val apiService: ApiService) : ViewModel() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { companies -> company.value = companies[0] },
+                { companies -> _company.value = companies[0] },
                 { throwable ->
-                    company.value =
+                    _company.value =
                         CompanyInfoItem(companyItem.id, companyItem.name, companyItem.img)
                 })
         compositeDisposable.add(disposable)

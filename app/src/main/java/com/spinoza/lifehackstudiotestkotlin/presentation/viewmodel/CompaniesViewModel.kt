@@ -10,14 +10,19 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class CompaniesViewModel(private val apiService: ApiService) : ViewModel() {
-    private val companies = MutableLiveData<MutableList<CompanyItem>>()
-    private val isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
-    private val error = MutableLiveData<String>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun getCompanies(): LiveData<MutableList<CompanyItem>> = companies
-    fun isLoading(): LiveData<Boolean> = isLoading
-    fun isError(): LiveData<String> = error
+    private val _companies = MutableLiveData<List<CompanyItem>>()
+    val companies: LiveData<List<CompanyItem>>
+        get() = _companies
+
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
+
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String>
+        get() = _error
 
     init {
         loadCompanies()
@@ -29,19 +34,20 @@ class CompaniesViewModel(private val apiService: ApiService) : ViewModel() {
     }
 
     private fun loadCompanies() {
-        if (isLoading.value == false) {
+        if (_isLoading.value == false) {
             val disposable = apiService.loadCompanies()
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe { isLoading.value = true }
+                .doOnSubscribe { _isLoading.value = true }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate { isLoading.value = false }
+                .doAfterTerminate { _isLoading.value = false }
                 .subscribe(
                     { companiesResponse ->
-                        val loadedCompanies = companies.value ?: companiesResponse.toMutableList()
-                        companies.value?.let { loadedCompanies.addAll(companiesResponse) }
-                        companies.value = loadedCompanies
+                        val loadedCompanies = mutableListOf<CompanyItem>()
+                        _companies.value?.let { loadedCompanies.addAll(it) }
+                        loadedCompanies.addAll(companiesResponse)
+                        _companies.value = loadedCompanies
                     },
-                    { throwable -> error.value = throwable.toString() }
+                    { throwable -> _error.value = throwable.toString() }
                 )
 
             compositeDisposable.add(disposable)
